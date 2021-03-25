@@ -1,5 +1,6 @@
 package com.dustinconrad.loophero
 
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
@@ -34,9 +35,15 @@ private fun maximizeInPlaceRecursiveDfs(acc: AtomicReference<Board>, board: Boar
     board[startY, startX] = Card.THICKET
 }
 
+fun maximizeInPlaceRecursiveDfsAsyncEntry(acc: AtomicReference<Board>, board: Board, startY: Int, startX: Int): CompletableFuture<Void> {
+    return CompletableFuture.runAsync {
+        maximizeInPlaceRecursiveDfs(acc, board, startY, startX)
+    }
+}
+
 @ExperimentalTime
 fun main() {
-    val height = 7
+    val height = 9
     val width = 5
 
     val board = ArrayBoard(height, width)
@@ -53,12 +60,11 @@ fun main() {
 
     val max = AtomicReference<Board>(board.copy())
     val time = measureTime {
-        startPositions.forEach { maximizeInPlaceRecursiveDfs(max, board.copy(), it.first, it.second) }
+//        startPositions.forEach { maximizeInPlaceRecursiveDfs(max, board.copy(), it.first, it.second) }
 
-//        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
-//
-//        max = results.map { it.join() }
-//            .maxOrNull()
+        val results = startPositions.map { maximizeInPlaceRecursiveDfsAsyncEntry(max, board.copy(), it.first, it.second) }
+
+        results.forEach { it.join() }
     }
 
     println("Score: ${max.get().score}")

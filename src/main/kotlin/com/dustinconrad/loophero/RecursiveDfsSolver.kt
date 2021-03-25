@@ -37,7 +37,7 @@ private fun maximizeRecursiveDfs(board: Board, startY: Int, startX: Int): Board 
     return toReturn
 }
 
-fun maximizeRecursiveDfsAsyncEntry(board: Board, startY: Int, startX: Int): CompletableFuture<Board> {
+private fun maximizeRecursiveDfsAsyncEntry(board: Board, startY: Int, startX: Int): CompletableFuture<Board> {
     return CompletableFuture.supplyAsync {
         maximizeRecursiveDfs(board, startY, startX)
     }
@@ -45,7 +45,7 @@ fun maximizeRecursiveDfsAsyncEntry(board: Board, startY: Int, startX: Int): Comp
 
 @ExperimentalTime
 fun main() {
-    val height = 7
+    val height = 8
     val width = 5
 
     val board = ArrayBoard(height, width)
@@ -62,13 +62,13 @@ fun main() {
 
     var max: Board?
     val time = measureTime {
-        max = startPositions.map { maximizeRecursiveDfs(board.copy(), it.first, it.second) }
-            .maxOrNull()
-
-//        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
-//
-//        max = results.map { it.join() }
+//        max = startPositions.map { maximizeRecursiveDfs(board.copy(), it.first, it.second) }
 //            .maxOrNull()
+
+        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
+
+        max = results.map { it.join() }
+            .maxOrNull()
     }
 
     println("Score: ${max?.score}")
