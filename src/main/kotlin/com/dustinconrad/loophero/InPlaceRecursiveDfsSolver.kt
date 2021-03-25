@@ -35,7 +35,7 @@ private fun maximizeInPlaceRecursiveDfs(acc: AtomicReference<Board>, board: Boar
     board[startY, startX] = Card.THICKET
 }
 
-fun maximizeInPlaceRecursiveDfsAsyncEntry(acc: AtomicReference<Board>, board: Board, startY: Int, startX: Int): CompletableFuture<Void> {
+private fun maximizeInPlaceRecursiveDfsAsyncEntry(acc: AtomicReference<Board>, board: Board, startY: Int, startX: Int): CompletableFuture<Void> {
     return CompletableFuture.runAsync {
         maximizeInPlaceRecursiveDfs(acc, board, startY, startX)
     }
