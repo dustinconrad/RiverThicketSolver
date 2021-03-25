@@ -33,7 +33,7 @@ class ArrayBoard(
     override val height: Int,
     override val width: Int) : Board {
 
-    private var board = IntArray(height * width) { 0 }
+    private var board = ByteArray(height * width) { 0 }
 
     private var _score = height * width * 2
 
@@ -53,7 +53,7 @@ class ArrayBoard(
         val toReplace = this[y, x ]
         if (card != toReplace) {
             val countMod = if (card == Card.RIVER) 1 else -1
-            var prevSubScore = scoreTile(board[y * width + x])
+            var prevSubScore = scoreTile(board[y * width + x].toInt())
             var newSubScore = 0
 
             var neighborRivers = 0
@@ -64,10 +64,10 @@ class ArrayBoard(
                 } else {
 
                     val prevRiverCount = board[nY * width + nX]
-                    prevSubScore += scoreTile(prevRiverCount)
+                    prevSubScore += scoreTile(prevRiverCount.toInt())
                     newSubScore += scoreTile(prevRiverCount + countMod)
 
-                    board[nY * width + nX] = prevRiverCount + countMod
+                    board[nY * width + nX] = (prevRiverCount + countMod).toByte()
                 }
             }
 
@@ -92,9 +92,9 @@ class ArrayBoard(
             _score += newSubScore - prevSubScore
 
             board[y * width + x] = if (card == Card.RIVER) {
-                -1
+                (-1).toByte()
             } else {
-                neighborRivers
+                neighborRivers.toByte()
             }
         }
     }
@@ -117,7 +117,6 @@ class ArrayBoard(
     override fun toString(): String {
         return (0 until height)
             .map { y -> (0 until width).map { x -> this[y, x].toString() } }
-            .map { it.joinToString("") }
-            .joinToString("\n")
+            .joinToString("\n") { it.joinToString("") }
     }
 }

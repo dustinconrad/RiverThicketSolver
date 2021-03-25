@@ -62,11 +62,10 @@ fun main() {
         startPositions.add(0 to x)
     }
 
+    var max: Board?
     val time = measureTime {
-        val max = startPositions.map { maximize(board.copy(), it.first, it.second) }
+        max = startPositions.map { maximize(board.copy(), it.first, it.second) }
             .maxByOrNull { it.score }
-        println("Score: ${max?.score}")
-        println(max.toString())
 
 //        val results = startPositions.map { maximizeAsyncEntry(board.copy(), it.first, it.second) }
 //
@@ -76,5 +75,7 @@ fun main() {
 //        println(max.toString())
     }
 
+    println("Score: ${max?.score}")
+    println(max.toString())
     println("Took $time")
 }
