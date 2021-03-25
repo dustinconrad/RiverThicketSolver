@@ -113,8 +113,7 @@ class ArrayBoard(
         when {
             riverCount < 0 -> 0
             riverCount == 0 -> 2
-            riverCount < 5  -> riverCount * 4
-            else -> throw IllegalArgumentException("Unexpected river count")
+            else -> riverCount * 4
         }
 
     override fun toString(): String {
