@@ -1,19 +1,20 @@
 package com.dustinconrad.loophero
 
-import java.lang.IllegalArgumentException
-import java.util.concurrent.CompletableFuture
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
-private fun maximizeRecursiveDfs(board: Board, startY: Int, startX: Int): Board {
+private fun maximizeInPlaceRecursiveDfs(acc: AtomicReference<Board>, board: Board, startY: Int, startX: Int) {
     board[startY, startX] = Card.RIVER
-
-    val neighborCandidates = ArrayList<Board>(5)
-    neighborCandidates.add(board)
+    if (board > acc.get()) {
+        acc.accumulateAndGet(board.copy()) { prev, x ->
+            maxOf(prev, x)
+        }
+    }
 
     fun checkAndAdd(y: Int, x: Int) {
         if (board[y, x] == Card.THICKET) {
-            neighborCandidates.add(maximizeRecursiveDfs(board, y, x))
+            maximizeInPlaceRecursiveDfs(acc, board, y, x)
         }
     }
 
@@ -30,17 +31,7 @@ private fun maximizeRecursiveDfs(board: Board, startY: Int, startX: Int): Board 
         checkAndAdd(startY, startX + 1)
     }
 
-    val toReturn = neighborCandidates.maxOrNull()?.copy() ?: throw IllegalArgumentException("Unexpected state")
-
     board[startY, startX] = Card.THICKET
-
-    return toReturn
-}
-
-fun maximizeRecursiveDfsAsyncEntry(board: Board, startY: Int, startX: Int): CompletableFuture<Board> {
-    return CompletableFuture.supplyAsync {
-        maximizeRecursiveDfs(board, startY, startX)
-    }
 }
 
 @ExperimentalTime
@@ -60,10 +51,9 @@ fun main() {
         startPositions.add(0 to x)
     }
 
-    var max: Board?
+    val max = AtomicReference<Board>(board.copy())
     val time = measureTime {
-        max = startPositions.map { maximizeRecursiveDfs(board.copy(), it.first, it.second) }
-            .maxOrNull()
+        startPositions.forEach { maximizeInPlaceRecursiveDfs(max, board.copy(), it.first, it.second) }
 
 //        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
 //
@@ -71,7 +61,7 @@ fun main() {
 //            .maxOrNull()
     }
 
-    println("Score: ${max?.score}")
-    println(max.toString())
+    println("Score: ${max.get().score}")
+    println(max.get().toString())
     println("Took $time")
 }
