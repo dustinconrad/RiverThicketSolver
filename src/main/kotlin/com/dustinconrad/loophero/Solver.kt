@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
-fun maximize(board: Board, startY: Int, startX: Int): Board {
+fun maximizeRecursiveDfs(board: Board, startY: Int, startX: Int): Board {
     if (board[startY, startX] == Card.RIVER) {
         return board.copy()
     }
@@ -16,7 +16,7 @@ fun maximize(board: Board, startY: Int, startX: Int): Board {
 
     fun checkAndAdd(y: Int, x: Int) {
         if (board[y, x] == Card.THICKET) {
-            neighborCandidates.add(maximize(board, y, x))
+            neighborCandidates.add(maximizeRecursiveDfs(board, y, x))
         }
     }
 
@@ -40,15 +40,15 @@ fun maximize(board: Board, startY: Int, startX: Int): Board {
     return toReturn
 }
 
-fun maximizeAsyncEntry(board: Board, startY: Int, startX: Int): CompletableFuture<Board> {
+fun maximizeRecursiveDfsAsyncEntry(board: Board, startY: Int, startX: Int): CompletableFuture<Board> {
     return CompletableFuture.supplyAsync {
-        maximize(board, startY, startX)
+        maximizeRecursiveDfs(board, startY, startX)
     }
 }
 
 @ExperimentalTime
 fun main() {
-    val height = 7
+    val height = 9
     val width = 5
 
     val board = ArrayBoard(height, width)
@@ -65,15 +65,13 @@ fun main() {
 
     var max: Board?
     val time = measureTime {
-        max = startPositions.map { maximize(board.copy(), it.first, it.second) }
-            .maxByOrNull { it.score }
+//        max = startPositions.map { maximize(board.copy(), it.first, it.second) }
+//            .maxOrNull()
 
-//        val results = startPositions.map { maximizeAsyncEntry(board.copy(), it.first, it.second) }
-//
-//        val max = results.map { it.join() }
-//            .maxByOrNull { it.score }
-//        println("Score: ${max?.score}")
-//        println(max.toString())
+        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
+
+        max = results.map { it.join() }
+            .maxOrNull()
     }
 
     println("Score: ${max?.score}")
