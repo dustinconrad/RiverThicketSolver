@@ -6,9 +6,6 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 fun maximizeRecursiveDfs(board: Board, startY: Int, startX: Int): Board {
-    if (board[startY, startX] == Card.RIVER) {
-        return board.copy()
-    }
     board[startY, startX] = Card.RIVER
 
     val neighborCandidates = ArrayList<Board>(5)
@@ -48,7 +45,7 @@ fun maximizeRecursiveDfsAsyncEntry(board: Board, startY: Int, startX: Int): Comp
 
 @ExperimentalTime
 fun main() {
-    val height = 9
+    val height = 7
     val width = 5
 
     val board = ArrayBoard(height, width)
@@ -65,13 +62,13 @@ fun main() {
 
     var max: Board?
     val time = measureTime {
-//        max = startPositions.map { maximize(board.copy(), it.first, it.second) }
-//            .maxOrNull()
-
-        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
-
-        max = results.map { it.join() }
+        max = startPositions.map { maximizeRecursiveDfs(board.copy(), it.first, it.second) }
             .maxOrNull()
+
+//        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
+//
+//        max = results.map { it.join() }
+//            .maxOrNull()
     }
 
     println("Score: ${max?.score}")
