@@ -1,5 +1,6 @@
 package com.dustinconrad.loophero
 
+import java.lang.IllegalArgumentException
 import java.util.concurrent.CompletableFuture
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
@@ -8,25 +9,30 @@ fun maximize(board: Board, startY: Int, startX: Int): Board {
     if (board[startY, startX] == Card.RIVER) {
         return board.copy()
     }
-    var max = board
     board[startY, startX] = Card.RIVER
 
-    val maxNeighbor = sequenceOf(
-        startY - 1 to startX,
-        startY + 1 to startX,
-        startY to startX + 1,
-        startY to startX - 1)
-        .filter { it.first >= 0 && it.first < board.height }
-        .filter { it.second >= 0 && it.second < board.width }
-        .filter{ board[it.first, it.second] == Card.THICKET }
-        .map { maximize(board, it.first, it.second) }
-        .maxByOrNull { it.score }
+    val neighborCandidates = mutableListOf(board)
 
-    if (maxNeighbor != null && maxNeighbor.score > max.score) {
-        max = maxNeighbor
+    fun checkAndAdd(y: Int, x: Int) {
+        if (board[y, x] == Card.THICKET) {
+            neighborCandidates.add(maximize(board, y, x))
+        }
     }
 
-    val toReturn = max.copy()
+    if (startY > 0) {
+        checkAndAdd(startY - 1, startX)
+    }
+    if (startY < board.height - 1) {
+        checkAndAdd(startY + 1, startX)
+    }
+    if (startX > 0) {
+        checkAndAdd(startY, startX - 1)
+    }
+    if (startX < board.width - 1) {
+        checkAndAdd(startY, startX + 1)
+    }
+
+    val toReturn = neighborCandidates.maxByOrNull { it.score }?.copy() ?: throw IllegalArgumentException("Unexpected state")
 
     board[startY, startX] = Card.THICKET
 
