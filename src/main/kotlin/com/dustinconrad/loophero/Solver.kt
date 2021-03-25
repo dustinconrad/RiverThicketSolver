@@ -11,7 +11,8 @@ fun maximize(board: Board, startY: Int, startX: Int): Board {
     }
     board[startY, startX] = Card.RIVER
 
-    val neighborCandidates = mutableListOf(board)
+    val neighborCandidates = ArrayList<Board>(5)
+    neighborCandidates.add(board)
 
     fun checkAndAdd(y: Int, x: Int) {
         if (board[y, x] == Card.THICKET) {
