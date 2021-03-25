@@ -13,7 +13,7 @@ enum class Card(private val ts: String) {
     }
 }
 
-interface Board {
+interface Board : Comparable<Board> {
 
     val height: Int
 
@@ -27,6 +27,9 @@ interface Board {
 
     fun copy(): Board
 
+    override fun compareTo(other: Board): Int {
+        return this.score.compareTo(other.score)
+    }
 }
 
 class ArrayBoard(

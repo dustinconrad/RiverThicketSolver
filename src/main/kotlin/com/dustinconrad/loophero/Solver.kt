@@ -33,7 +33,7 @@ fun maximize(board: Board, startY: Int, startX: Int): Board {
         checkAndAdd(startY, startX + 1)
     }
 
-    val toReturn = neighborCandidates.maxByOrNull { it.score }?.copy() ?: throw IllegalArgumentException("Unexpected state")
+    val toReturn = neighborCandidates.maxOrNull()?.copy() ?: throw IllegalArgumentException("Unexpected state")
 
     board[startY, startX] = Card.THICKET
 
