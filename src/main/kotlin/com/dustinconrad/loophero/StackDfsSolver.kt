@@ -56,7 +56,7 @@ private fun maximizeStackAsyncEntry(acc: AtomicReference<Board>, board: Board, s
 
 @ExperimentalTime
 fun main() {
-    val height = 7
+    val height = 8
     val width = 5
 
     val board = ArrayBoard(height, width)
