@@ -7,9 +7,6 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 import java.util.concurrent.ForkJoinPool
 
-
-
-
 class DfsAction(
     private val acc: AtomicReference<Board>,
     private val board: Board,
@@ -30,7 +27,11 @@ class DfsAction(
 
         fun checkAndAdd(y: Int, x: Int) {
             if (board[y, x] == Card.THICKET) {
-                subtasks.add(DfsAction(acc, board.copy(), y, x))
+                if (subtasks.isEmpty()) {
+                    subtasks.add(DfsAction(acc, board, y, x))
+                } else {
+                    subtasks.add(DfsAction(acc, board.copy(), y, x))
+                }
             }
         }
 
@@ -96,9 +97,6 @@ fun main() {
     val time = measureTime {
         pool.invoke(initialTask)
         pool.shutdown()
-
-//        val results = startPositions.map { maximizeStackAsyncEntry(max, board.copy(), it.first, it.second) }
-//        results.forEach { it.join() }
     }
 
     println("Score: ${max.get().score}")

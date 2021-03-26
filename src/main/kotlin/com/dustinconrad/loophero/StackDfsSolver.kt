@@ -26,9 +26,15 @@ private fun maximizeStackDfs(acc: AtomicReference<Board>, initialBoard: Board, i
             }
         }
 
+        var addCount = 0;
+
         fun checkAndAdd(y: Int, x: Int) {
             if (currBoard[y, x] == Card.THICKET) {
-                stack.addLast(State(currBoard.copy(), y to x))
+                if (addCount++ == 0) {
+                    stack.addLast(State(currBoard, y to x))
+                } else {
+                    stack.addLast(State(currBoard.copy(), y to x))
+                }
             }
         }
 
