@@ -43,7 +43,7 @@ private fun maximizeInPlaceRecursiveDfsAsyncEntry(acc: AtomicReference<Board>, b
 
 @ExperimentalTime
 fun main() {
-    val height = 9
+    val height = 7
     val width = 5
 
     val board = ArrayBoard(height, width)
@@ -60,11 +60,10 @@ fun main() {
 
     val max = AtomicReference<Board>(board.copy())
     val time = measureTime {
-//        startPositions.forEach { maximizeInPlaceRecursiveDfs(max, board.copy(), it.first, it.second) }
+        startPositions.forEach { maximizeInPlaceRecursiveDfs(max, board.copy(), it.first, it.second) }
 
-        val results = startPositions.map { maximizeInPlaceRecursiveDfsAsyncEntry(max, board.copy(), it.first, it.second) }
-
-        results.forEach { it.join() }
+//        val results = startPositions.map { maximizeInPlaceRecursiveDfsAsyncEntry(max, board.copy(), it.first, it.second) }
+//        results.forEach { it.join() }
     }
 
     println("Score: ${max.get().score}")

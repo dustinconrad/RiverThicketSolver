@@ -1,9 +1,5 @@
 package com.dustinconrad.loophero
 
-import java.lang.IllegalArgumentException
-
-typealias Coord = Pair<Int, Int>
-
 enum class Card(private val ts: String) {
     RIVER("r"),
     THICKET("#");
