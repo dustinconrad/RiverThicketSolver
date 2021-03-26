@@ -62,12 +62,12 @@ fun main() {
 
     var max: Board?
     val time = measureTime {
-        max = startPositions.map { maximizeRecursiveDfs(board.copy(), it.first, it.second) }
-            .maxOrNull()
-
-//        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
-//        max = results.map { it.join() }
+//        max = startPositions.map { maximizeRecursiveDfs(board.copy(), it.first, it.second) }
 //            .maxOrNull()
+
+        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
+        max = results.map { it.join() }
+            .maxOrNull()
     }
 
     println("Score: ${max?.score}")
