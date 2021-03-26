@@ -8,9 +8,7 @@ import kotlin.time.measureTime
 private fun maximizeInPlaceRecursiveDfs(acc: AtomicReference<Board>, board: Board, startY: Int, startX: Int) {
     board[startY, startX] = Card.RIVER
     if (board > acc.get()) {
-        acc.accumulateAndGet(board.copy()) { prev, x ->
-            maxOf(prev, x)
-        }
+        acc.accumulateAndGet(board.copy(), ::maxOf)
     }
 
     fun checkAndAdd(y: Int, x: Int) {

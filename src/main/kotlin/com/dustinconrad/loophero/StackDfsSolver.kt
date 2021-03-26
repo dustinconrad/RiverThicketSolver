@@ -21,9 +21,7 @@ private fun maximizeStackDfs(acc: AtomicReference<Board>, initialBoard: Board, i
         currBoard[nextY, nextX] = Card.RIVER
 
         if (currBoard > acc.get()) {
-            acc.accumulateAndGet(currBoard.copy()) { prev, x ->
-                maxOf(prev, x)
-            }
+            acc.accumulateAndGet(currBoard.copy(), ::maxOf)
         }
 
         var addCount = 0;

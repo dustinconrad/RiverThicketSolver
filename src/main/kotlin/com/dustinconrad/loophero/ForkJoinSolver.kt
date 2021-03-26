@@ -18,9 +18,7 @@ class DfsAction(
         board[nextY, nextX] = Card.RIVER
 
         if (board > acc.get()) {
-            acc.accumulateAndGet(board) { prev, x ->
-                maxOf(prev, x)
-            }
+            acc.accumulateAndGet(board.copy(), ::maxOf)
         }
 
         val subtasks = ArrayList<DfsAction>(4)
