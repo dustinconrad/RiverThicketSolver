@@ -35,7 +35,7 @@ class ArrayBoard(
     private var _score: Int,
 ): Board {
 
-    constructor(height: Int, width: Int): this(height, width, ByteArray(height * width) { 0 }, height * width * 2)
+    constructor(height: Int, width: Int): this(height, width, ByteArray(height * width), height * width * 2)
 
     override fun get(y: Int, x: Int): Card =
         if (board[y * width + x] < 0) {

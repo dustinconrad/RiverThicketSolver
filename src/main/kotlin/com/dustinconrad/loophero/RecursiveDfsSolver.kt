@@ -50,15 +50,7 @@ fun main() {
 
     val board = ArrayBoard(height, width)
 
-    val startPositions = mutableSetOf<Pair<Int,Int>>()
-
-    for (y in 0 until (height / 2.0 + 0.5).toInt()) {
-        startPositions.add(y to 0)
-    }
-
-    for (x in 0 until (width / 2.0 + 0.5).toInt()) {
-        startPositions.add(0 to x)
-    }
+    val startPositions = startPositions(board)
 
     var max: Board?
     val time = measureTime {
