@@ -71,7 +71,7 @@ class DfsEntry(
 
 @ExperimentalTime
 fun main() {
-    val height = 9
+    val height = 8
     val width = 5
     val parallellism = ForkJoinPool.getCommonPoolParallelism()
 
@@ -91,14 +91,18 @@ fun main() {
 
     val initialTask = DfsEntry(max, board, startPositions)
     val pool = ForkJoinPool(parallellism)
-    println("Parallellism: ${pool.parallelism}")
 
     val time = measureTime {
         pool.invoke(initialTask)
-        pool.shutdown()
     }
+    pool.shutdown()
 
     println("Score: ${max.get().score}")
     println(max.get().toString())
     println("Took $time")
+
+    println()
+    println("Pool")
+    println("Parallellism: ${pool.parallelism}")
+    println("Steal count: ${pool.stealCount}")
 }
