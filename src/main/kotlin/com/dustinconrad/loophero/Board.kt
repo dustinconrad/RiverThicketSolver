@@ -30,16 +30,12 @@ interface Board : Comparable<Board> {
 
 class ArrayBoard(
     override val height: Int,
-    override val width: Int) : Board {
+    override val width: Int,
+    private val board: ByteArray,
+    private var _score: Int,
+): Board {
 
-    private var board = ByteArray(height * width) { 0 }
-
-    private var _score = height * width * 2
-
-    private constructor(board: ArrayBoard): this(board.height, board.width) {
-        this.board = board.board.copyOf()
-        this._score = board._score
-    }
+    constructor(height: Int, width: Int): this(height, width, ByteArray(height * width) { 0 }, height * width * 2)
 
     override fun get(y: Int, x: Int): Card =
         if (board[y * width + x] < 0) {
@@ -102,7 +98,7 @@ class ArrayBoard(
         get() = _score
 
     override fun copy(): Board {
-        return ArrayBoard(this)
+        return ArrayBoard(height, width, board.copyOf(), _score)
     }
 
     private fun scoreTile(riverCount: Int) =
