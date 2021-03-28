@@ -71,7 +71,7 @@ class DfsEntry(
 
 @ExperimentalTime
 fun main() {
-    val height = 9
+    val height = 8
     val width = 5
     val parallellism = ForkJoinPool.getCommonPoolParallelism()
 
