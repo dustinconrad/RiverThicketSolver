@@ -34,9 +34,9 @@ abstract class NeighborCountingBoard(
     private var _score: Int,
 ) : Board {
 
-    abstract protected fun rawGet(y: Int, x: Int): Byte
+    protected abstract fun rawGet(y: Int, x: Int): Int
 
-    abstract protected fun rawSet(y: Int, x: Int, value: Byte)
+    protected abstract fun rawSet(y: Int, x: Int, value: Int)
 
     override fun get(y: Int, x: Int): Card =
         if (rawGet(y, x) < 0) {
@@ -49,7 +49,7 @@ abstract class NeighborCountingBoard(
         val toReplace = this[y, x ]
         if (card != toReplace) {
             val countMod = if (card == Card.RIVER) 1 else -1
-            var prevSubScore = scoreTile(rawGet(y, x).toInt())
+            var prevSubScore = scoreTile(rawGet(y, x))
             var newSubScore = 0
 
             var neighborRivers = 0
@@ -60,10 +60,10 @@ abstract class NeighborCountingBoard(
                 } else {
 
                     val prevRiverCount = rawGet(nY, nX)
-                    prevSubScore += scoreTile(prevRiverCount.toInt())
+                    prevSubScore += scoreTile(prevRiverCount)
                     newSubScore += scoreTile(prevRiverCount + countMod)
 
-                    rawSet(nY, nX, (prevRiverCount + countMod).toByte())
+                    rawSet(nY, nX, prevRiverCount + countMod)
                 }
             }
 
@@ -89,9 +89,9 @@ abstract class NeighborCountingBoard(
 
             rawSet(y, x,
                 if (card == Card.RIVER) {
-                    (-1).toByte()
+                    -1
                 } else {
-                    neighborRivers.toByte()
+                    neighborRivers
                 }
             )
         }
@@ -123,10 +123,10 @@ class ArrayBoard(
 
     constructor(height: Int, width: Int): this(height, width, height * width * 2, ByteArray(height * width))
 
-    override fun rawGet(y: Int, x: Int): Byte = board[y * width + x]
+    override fun rawGet(y: Int, x: Int): Int = board[y * width + x].toInt()
 
-    override fun rawSet(y: Int, x: Int, value: Byte) {
-        board[y * width + x] = value
+    override fun rawSet(y: Int, x: Int, value: Int) {
+        board[y * width + x] = value.toByte()
     }
 
     override fun copy(): Board {
@@ -134,3 +134,33 @@ class ArrayBoard(
     }
 
 }
+
+//class NibbleBoard(
+//    height: Int,
+//    width: Int,
+//    score: Int,
+//    private val board: ByteArray,
+//): NeighborCountingBoard(height, width, score) {
+//
+//    constructor(height: Int, width: Int): this(height, width, height * width * 2, ByteArray(((height * width)/2.0 + 0.5).roundToInt()))
+//
+//    override fun rawGet(y: Int, x: Int): Int {
+//        val bucketIdx = (y * width + x) / 2
+//        val offset = (y * width + x) % 2
+//        val bucketVal = board[bucketIdx]
+//        return if (offset == 0) {
+//            bucketVal and 0x7
+//        } else {
+//            bucketVal and 0x38
+//        }
+//    }
+//
+//    override fun rawSet(y: Int, x: Int, value: Int) {
+//        board[y * width + x] = value.toByte()
+//    }
+//
+//    override fun copy(): Board {
+//        return ArrayBoard(height, width, score, board.copyOf())
+//    }
+//
+//}
