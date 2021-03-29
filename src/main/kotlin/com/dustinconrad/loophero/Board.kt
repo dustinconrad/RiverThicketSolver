@@ -26,6 +26,7 @@ interface Board : Comparable<Board> {
     override fun compareTo(other: Board): Int {
         return this.score.compareTo(other.score)
     }
+
 }
 
 abstract class NeighborCountingBoard(
@@ -55,11 +56,10 @@ abstract class NeighborCountingBoard(
             var neighborRivers = 0
 
             fun neighborCheck(nY: Int, nX: Int) {
-                if (this[nY, nX] == Card.RIVER) {
+                val prevRiverCount = rawGet(nY, nX)
+                if (prevRiverCount < 0) {
                     neighborRivers++
                 } else {
-
-                    val prevRiverCount = rawGet(nY, nX)
                     prevSubScore += scoreTile(prevRiverCount)
                     newSubScore += scoreTile(prevRiverCount + countMod)
 
@@ -95,6 +95,7 @@ abstract class NeighborCountingBoard(
                 }
             )
         }
+
     }
 
     override val score: Int
@@ -111,6 +112,12 @@ abstract class NeighborCountingBoard(
         return (0 until height)
             .map { y -> (0 until width).map { x -> this[y, x].toString() } }
             .joinToString("\n") { it.joinToString("") }
+    }
+
+    protected fun debug(): String {
+        return (0 until height)
+            .map { y -> (0 until width).map { x -> rawGet(y, x).toString().padStart(2, ' ') } }
+            .joinToString("\n") { it.joinToString(" ") }
     }
 }
 
@@ -135,32 +142,39 @@ class ArrayBoard(
 
 }
 
-//class NibbleBoard(
-//    height: Int,
-//    width: Int,
-//    score: Int,
-//    private val board: ByteArray,
-//): NeighborCountingBoard(height, width, score) {
-//
-//    constructor(height: Int, width: Int): this(height, width, height * width * 2, ByteArray(((height * width)/2.0 + 0.5).roundToInt()))
-//
-//    override fun rawGet(y: Int, x: Int): Int {
-//        val bucketIdx = (y * width + x) / 2
-//        val offset = (y * width + x) % 2
-//        val bucketVal = board[bucketIdx]
-//        return if (offset == 0) {
-//            bucketVal and 0x7
-//        } else {
-//            bucketVal and 0x38
-//        }
-//    }
-//
-//    override fun rawSet(y: Int, x: Int, value: Int) {
-//        board[y * width + x] = value.toByte()
-//    }
-//
-//    override fun copy(): Board {
-//        return ArrayBoard(height, width, score, board.copyOf())
-//    }
-//
-//}
+class NibbleBoard(
+    height: Int,
+    width: Int,
+    score: Int,
+    private val board: ByteArray,
+): NeighborCountingBoard(height, width, score) {
+
+    constructor(height: Int, width: Int): this(height, width, height * width * 2, ByteArray(((height * width)/2.0 + 0.5).toInt()))
+
+    override fun rawGet(y: Int, x: Int): Int {
+        val bucketIdx = (y * width + x) / 2
+        val offset = (y * width + x) % 2
+        val bucketVal = board[bucketIdx]
+        return if (offset == 0) {
+            bucketVal.lowerNibble()
+        } else {
+            bucketVal.upperNibble()
+        }
+    }
+
+    override fun rawSet(y: Int, x: Int, value: Int) {
+        val bucketIdx = (y * width + x) / 2
+        val offset = (y * width + x) % 2
+        val bucketVal = board[bucketIdx]
+        if (offset == 0) {
+            board[bucketIdx] = bucketVal.setLowerNibble(value).toByte()
+        } else {
+            board[bucketIdx] = bucketVal.setUpperNibble(value).toByte()
+        }
+    }
+
+    override fun copy(): Board {
+        return NibbleBoard(height, width, score, board.copyOf())
+    }
+
+}

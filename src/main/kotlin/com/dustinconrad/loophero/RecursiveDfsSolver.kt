@@ -45,21 +45,21 @@ private fun maximizeRecursiveDfsAsyncEntry(board: Board, startY: Int, startX: In
 
 @ExperimentalTime
 fun main() {
-    val height = 8
-    val width = 5
+    val height = 2
+    val width = 2
 
-    val board = ArrayBoard(height, width)
+    val board = NibbleBoard(height, width)
 
     val startPositions = startPositions(board)
 
     var max: Board?
     val time = measureTime {
-//        max = startPositions.map { maximizeRecursiveDfs(board.copy(), it.first, it.second) }
-//            .maxOrNull()
-
-        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
-        max = results.map { it.join() }
+        max = startPositions.map { maximizeRecursiveDfs(board.copy(), it.first, it.second) }
             .maxOrNull()
+
+//        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
+//        max = results.map { it.join() }
+//            .maxOrNull()
     }
 
     println("Score: ${max?.score}")
