@@ -75,7 +75,7 @@ fun main() {
     val width = 5
     val parallellism = ForkJoinPool.getCommonPoolParallelism()
 
-    val board = ArrayBoard(height, width)
+    val board = ByteArrayBoard(height, width)
 
     val startPositions = startPositions(board)
 

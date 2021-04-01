@@ -45,10 +45,10 @@ private fun maximizeRecursiveDfsAsyncEntry(board: Board, startY: Int, startX: In
 
 @ExperimentalTime
 fun main() {
-    val height = 2
-    val width = 2
+    val height = 7
+    val width = 5
 
-    val board = NibbleBoard(height, width)
+    val board = ByteArrayBoard(height, width)
 
     val startPositions = startPositions(board)
 

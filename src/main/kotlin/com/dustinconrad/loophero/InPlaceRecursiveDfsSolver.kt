@@ -44,7 +44,7 @@ fun main() {
     val height = 8
     val width = 5
 
-    val board = ArrayBoard(height, width)
+    val board = ByteArrayBoard(height, width)
 
     val startPositions = startPositions(board)
 

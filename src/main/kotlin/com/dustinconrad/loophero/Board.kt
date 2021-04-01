@@ -1,6 +1,5 @@
 package com.dustinconrad.loophero
 
-import java.util.*
 
 enum class Card(private val ts: String) {
     RIVER("r"),
@@ -123,7 +122,7 @@ abstract class NeighborCountingBoard(
     }
 }
 
-class ArrayBoard(
+class ByteArrayBoard(
     height: Int,
     width: Int,
     score: Int,
@@ -139,7 +138,28 @@ class ArrayBoard(
     }
 
     override fun copy(): Board {
-        return ArrayBoard(height, width, score, board.copyOf())
+        return ByteArrayBoard(height, width, score, board.copyOf())
+    }
+
+}
+
+class IntArrayBoard(
+    height: Int,
+    width: Int,
+    score: Int,
+    private val board: IntArray,
+): NeighborCountingBoard(height, width, score) {
+
+    constructor(height: Int, width: Int): this(height, width, height * width * 2, IntArray(height * width))
+
+    override fun rawGet(y: Int, x: Int): Int = board[y * width + x]
+
+    override fun rawSet(y: Int, x: Int, value: Int) {
+        board[y * width + x] = value
+    }
+
+    override fun copy(): Board {
+        return IntArrayBoard(height, width, score, board.copyOf())
     }
 
 }
@@ -179,29 +199,4 @@ class NibbleBoard(
         return NibbleBoard(height, width, score, board.copyOf())
     }
 
-}
-
-fun main() {
-    val sut = NibbleBoard(2, 2)
-
-    sut[0, 0] = Card.RIVER
-    println(sut.toString())
-    println(sut.board.contentToString())
-    println(sut.board.map { Integer.toBinaryString(it.toInt()).padStart(32, '0') }.toString())
-    println(sut.debug())
-    println()
-
-    sut[1, 0] = Card.RIVER
-    println(sut.toString())
-    println(sut.board.contentToString())
-    println(sut.board.map { Integer.toBinaryString(it.toInt()).padStart(32, '0') }.toString())
-    println(sut.debug())
-    println()
-
-    sut[1, 1] = Card.RIVER
-    println(sut.toString())
-    println(sut.board.contentToString())
-    println(sut.board.map { Integer.toBinaryString(it.toInt()).padStart(32, '0') }.toString())
-    println(sut.debug())
-    println()
 }
