@@ -1,5 +1,7 @@
 package com.dustinconrad.loophero
 
+import java.util.*
+
 enum class Card(private val ts: String) {
     RIVER("r"),
     THICKET("#");
@@ -80,10 +82,10 @@ abstract class NeighborCountingBoard(
                 neighborCheck(y, x + 1)
             }
 
-            newSubScore += if (card == Card.THICKET) {
-                scoreTile(neighborRivers)
-            } else {
+            newSubScore += if (card == Card.RIVER) {
                 0
+            } else {
+                scoreTile(neighborRivers)
             }
             _score += newSubScore - prevSubScore
 
@@ -114,7 +116,7 @@ abstract class NeighborCountingBoard(
             .joinToString("\n") { it.joinToString("") }
     }
 
-    protected fun debug(): String {
+    open fun debug(): String {
         return (0 until height)
             .map { y -> (0 until width).map { x -> rawGet(y, x).toString().padStart(2, ' ') } }
             .joinToString("\n") { it.joinToString(" ") }
@@ -146,7 +148,7 @@ class NibbleBoard(
     height: Int,
     width: Int,
     score: Int,
-    private val board: ByteArray,
+    val board: ByteArray,
 ): NeighborCountingBoard(height, width, score) {
 
     constructor(height: Int, width: Int): this(height, width, height * width * 2, ByteArray(((height * width)/2.0 + 0.5).toInt()))
@@ -156,9 +158,9 @@ class NibbleBoard(
         val offset = (y * width + x) % 2
         val bucketVal = board[bucketIdx]
         return if (offset == 0) {
-            bucketVal.lowerNibble()
-        } else {
             bucketVal.upperNibble()
+        } else {
+            bucketVal.lowerNibble()
         }
     }
 
@@ -167,9 +169,9 @@ class NibbleBoard(
         val offset = (y * width + x) % 2
         val bucketVal = board[bucketIdx]
         if (offset == 0) {
-            board[bucketIdx] = bucketVal.setLowerNibble(value).toByte()
-        } else {
             board[bucketIdx] = bucketVal.setUpperNibble(value).toByte()
+        } else {
+            board[bucketIdx] = bucketVal.setLowerNibble(value).toByte()
         }
     }
 
@@ -177,4 +179,29 @@ class NibbleBoard(
         return NibbleBoard(height, width, score, board.copyOf())
     }
 
+}
+
+fun main() {
+    val sut = NibbleBoard(2, 2)
+
+    sut[0, 0] = Card.RIVER
+    println(sut.toString())
+    println(sut.board.contentToString())
+    println(sut.board.map { Integer.toBinaryString(it.toInt()).padStart(32, '0') }.toString())
+    println(sut.debug())
+    println()
+
+    sut[1, 0] = Card.RIVER
+    println(sut.toString())
+    println(sut.board.contentToString())
+    println(sut.board.map { Integer.toBinaryString(it.toInt()).padStart(32, '0') }.toString())
+    println(sut.debug())
+    println()
+
+    sut[1, 1] = Card.RIVER
+    println(sut.toString())
+    println(sut.board.contentToString())
+    println(sut.board.map { Integer.toBinaryString(it.toInt()).padStart(32, '0') }.toString())
+    println(sut.debug())
+    println()
 }

@@ -14,16 +14,17 @@ fun startPositions(board: Board): Set<Pair<Int, Int>> {
     return startPositions
 }
 
-fun Byte.lowerNibble(): Int = (this.toInt() and 0xF)
+fun Byte.lowerNibble(): Int =
+    (this.toInt() and 0xF) shl 28 shr 28
 
 fun Byte.upperNibble(): Int {
     return (this.toInt() and -16) shr 4
 }
 
 fun Byte.setLowerNibble(nibble: Int): Int {
-    return ((this.toInt() and -16) or nibble)
+    return ((this.toInt() and -16) or (0xF and nibble))
 }
 
 fun Byte.setUpperNibble(nibble: Int): Int {
-    return (this.toInt() and 0xF) or nibble
+    return (this.toInt() and 0xF) or (nibble shl 4)
 }
