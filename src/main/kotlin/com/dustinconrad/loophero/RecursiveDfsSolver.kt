@@ -45,7 +45,7 @@ private fun maximizeRecursiveDfsAsyncEntry(board: Board, startY: Int, startX: In
 
 @ExperimentalTime
 fun main() {
-    val height = 7
+    val height = 8
     val width = 5
 
     val board = ByteArrayBoard(height, width)
@@ -54,12 +54,12 @@ fun main() {
 
     var max: Board?
     val time = measureTime {
-        max = startPositions.map { maximizeRecursiveDfs(board.copy(), it.first, it.second) }
-            .maxOrNull()
-
-//        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
-//        max = results.map { it.join() }
+//        max = startPositions.map { maximizeRecursiveDfs(board.copy(), it.first, it.second) }
 //            .maxOrNull()
+
+        val results = startPositions.map { maximizeRecursiveDfsAsyncEntry(board.copy(), it.first, it.second) }
+        max = results.map { it.join() }
+            .maxOrNull()
     }
 
     println("Score: ${max?.score}")
