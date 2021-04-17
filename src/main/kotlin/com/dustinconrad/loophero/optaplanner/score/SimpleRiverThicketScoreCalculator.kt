@@ -1,6 +1,7 @@
 package com.dustinconrad.loophero.optaplanner.score
 
 import com.dustinconrad.loophero.optaplanner.*
+import com.dustinconrad.loophero.optaplanner.domain.*
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator
 import kotlin.math.abs

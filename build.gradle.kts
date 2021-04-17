@@ -15,7 +15,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
 
-    implementation(platform("org.optaplanner:optaplanner-bom:8.4.1.Final"))
+    implementation(platform("org.optaplanner:optaplanner-bom:8.5.0.Final"))
     implementation("org.optaplanner:optaplanner-core")
 
     testImplementation(kotlin("test"))
