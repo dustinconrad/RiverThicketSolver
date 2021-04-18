@@ -1,6 +1,5 @@
 package com.dustinconrad.loophero.optaplanner.score
 
-import com.dustinconrad.loophero.optaplanner.*
 import com.dustinconrad.loophero.optaplanner.domain.*
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator
@@ -76,14 +75,18 @@ class SimpleRiverThicketScoreCalculator : EasyScoreCalculator<Grid, HardSoftScor
 
         }
 
-        // exactly 1 start river
-        hardScore -= abs(1 - riverStartCount)
-
         for (p in solution.shape) {
             when(p.card) {
                 is Thicket -> scoreThicket(p)
                 is River -> scoreRiver(p)
             }
+        }
+
+        // at most 1 start river
+        hardScore -= if (riverStartCount > 1) {
+            abs(1 - riverStartCount)
+        } else {
+            0
         }
 
         return HardSoftScore.of(hardScore, softScore)

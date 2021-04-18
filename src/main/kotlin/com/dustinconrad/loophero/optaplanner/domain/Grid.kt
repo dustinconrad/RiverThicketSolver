@@ -22,6 +22,8 @@ data class Position(
     val isEdge: Boolean
 ) {
 
+    private constructor(): this(0, 0, false)
+
     @PlanningVariable(valueRangeProviderRefs = [availableCardsId])
     var card: Card? = null
 
@@ -45,16 +47,15 @@ class Grid(
             .mapValues { (_, v) -> v.associateBy { it.x }.toSortedMap() }
             .toSortedMap()
 
-        val rows = Array(lookupMap.lastKey()) { "" }
+        val rows = Array(lookupMap.lastKey() + 1) { "" }
 
-        for (y in 0..lookupMap.lastKey()) {
+        for (y in rows.indices) {
             rows[y] = if (lookupMap.containsKey(y)) {
                 val row = lookupMap[y] ?: throw IllegalStateException("Unexpected row not present")
                 val rowString = StringBuilder()
                 for (x in 0..row.lastKey()) {
-                    rowString.append(
-                        row[x] ?: " "
-                    )
+                    val t = row[x]?.card ?: "_"
+                    rowString.append(t)
                 }
                 rowString.toString()
             } else {
@@ -62,7 +63,7 @@ class Grid(
             }
         }
 
-        return rows.joinToString { "\n" }
+        return rows.joinToString("\n")
     }
 }
 

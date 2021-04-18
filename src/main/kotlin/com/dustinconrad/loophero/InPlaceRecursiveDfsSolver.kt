@@ -41,8 +41,8 @@ private fun maximizeInPlaceRecursiveDfsAsyncEntry(acc: AtomicReference<Board>, b
 
 @ExperimentalTime
 fun main() {
-    val height = 8
-    val width = 5
+    val height = 4
+    val width = 4
 
     val board = ByteArrayBoard(height, width)
 
