@@ -17,14 +17,14 @@ fun main() {
             .withSolutionClass(Grid::class.java)
             .withEntityClasses(Position::class.java)
             .withEasyScoreCalculatorClass(SimpleRiverThicketScoreCalculator::class.java)
-            .withTerminationSpentLimit(Duration.ofSeconds(5))
+            .withTerminationSpentLimit(Duration.ofSeconds(2))
     )
 
     val solver = solverFactory.buildSolver()
 
     val positions = createPositions(4, 4)
 
-    val availableCards = listOf(*rivers.toTypedArray(), Thicket)
+    val availableCards = rivers + Thicket
 
     val grid = Grid(availableCards, positions)
 

@@ -54,8 +54,8 @@ class Grid(
                 val row = lookupMap[y] ?: throw IllegalStateException("Unexpected row not present")
                 val rowString = StringBuilder()
                 for (x in 0..row.lastKey()) {
-                    val t = row[x]?.card ?: "_"
-                    rowString.append(t)
+                    val t = row[x]?.card
+                    rowString.append(t?.toChar() ?: '_')
                 }
                 rowString.toString()
             } else {
@@ -68,18 +68,36 @@ class Grid(
 }
 
 fun createPositions(height: Int, width: Int): List<Position> {
-    val edgePositions = startPositions(height, width)
+    //val edgePositions = startPositions(height, width)
 
     val positions = mutableListOf<Position>()
 
     for (y in 0 until height) {
         for (x in 0 until width) {
             positions.add(
-                Position(y, x, edgePositions.contains(y to x))
+                Position(y, x, x == 0 || y == 0)
             )
         }
     }
 
     return positions
+}
+
+fun parseGrid(lines: List<String>): Grid {
+    val positions = lines.flatMapIndexed { y, line ->
+        line.mapIndexed { x, c ->
+            val p = Position(y, x, x == 0 || y == 0)
+            val card = parseCard(c)
+            p.card = card
+
+            p
+        }
+    }
+
+    val availableCards = positions.mapNotNull { it.card }
+        .toSet()
+        .toList()
+
+    return Grid(availableCards, positions)
 }
 

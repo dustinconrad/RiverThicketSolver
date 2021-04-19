@@ -1,9 +1,5 @@
-package com.dustinconrad.loopheroo
+package com.dustinconrad.loophero
 
-import com.dustinconrad.loophero.lowerNibble
-import com.dustinconrad.loophero.setLowerNibble
-import com.dustinconrad.loophero.setUpperNibble
-import com.dustinconrad.loophero.upperNibble
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
