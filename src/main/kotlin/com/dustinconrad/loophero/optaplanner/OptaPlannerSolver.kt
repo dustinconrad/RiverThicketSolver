@@ -3,7 +3,9 @@ package com.dustinconrad.loophero.optaplanner
 import com.dustinconrad.loophero.optaplanner.domain.*
 import com.dustinconrad.loophero.optaplanner.score.SimpleRiverThicketScoreCalculator
 import org.optaplanner.core.api.solver.SolverFactory
+import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig
 import org.optaplanner.core.config.solver.SolverConfig
+import org.optaplanner.core.impl.exhaustivesearch.ExhaustiveSearchPhase
 import java.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
@@ -22,7 +24,7 @@ fun main() {
 
     val solver = solverFactory.buildSolver()
 
-    val positions = createPositions(4, 4)
+    val positions = createPositions(5, 5)
 
     val availableCards = rivers + Thicket
 
@@ -32,6 +34,6 @@ fun main() {
     val time = measureTime {
         result = solver.solve(grid)
     }
-    println("took $time")
+    println("Took $time")
     println(result)
 }

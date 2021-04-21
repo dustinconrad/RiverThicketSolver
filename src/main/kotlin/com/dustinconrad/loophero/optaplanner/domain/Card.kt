@@ -1,17 +1,28 @@
 package com.dustinconrad.loophero.optaplanner.domain
 
-private enum class Direction {
-    NORTH,
-    SOUTH,
-    EAST,
-    WEST
+enum class Direction(val deltaY: Int, val deltaX: Int) {
+    NORTH(-1, 0),
+    SOUTH(1, 0),
+    EAST(0, 1),
+    WEST(0, -1),
+}
+
+fun Direction.reverse() = when(this) {
+    Direction.NORTH -> Direction.SOUTH
+    Direction.SOUTH -> Direction.NORTH
+    Direction.EAST -> Direction.WEST
+    Direction.WEST -> Direction.EAST
+}
+
+operator fun Pair<Int, Int>.plus(dir: Direction): Pair<Int, Int> {
+    return this.first + dir.deltaY to this.second + dir.deltaX
 }
 
 sealed class Card private constructor() {
     abstract fun toChar(): Char
 }
 
-sealed class River private constructor(private val dir: Direction) : Card()
+sealed class River private constructor(val direction: Direction) : Card()
 
 object NorthRiver : River(Direction.NORTH) {
     override fun toChar(): Char = '^'

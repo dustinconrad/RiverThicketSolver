@@ -15,19 +15,14 @@ class SimpleRiverThicketScoreCalculator : EasyScoreCalculator<Grid, HardSoftScor
         var riverStartCount = 0
 
         fun scoreThicket(p: Position) {
-            var riverNeighborCount = 0
-            if (lookupMap[p.y - 1 to p.x]?.card is River) {
-                riverNeighborCount++
+            val riverNeighborCount = Direction.values().fold(0) { acc, dir ->
+                acc + if (lookupMap[p.y + dir.deltaY to p.x + dir.deltaX]?.card is River) {
+                    1
+                } else {
+                    0
+                }
             }
-            if (lookupMap[p.y + 1 to p.x]?.card is River) {
-                riverNeighborCount++
-            }
-            if (lookupMap[p.y to p.x - 1]?.card is River) {
-                riverNeighborCount++
-            }
-            if (lookupMap[p.y to p.x + 1]?.card is River) {
-                riverNeighborCount++
-            }
+
             softScore += if (riverNeighborCount == 0) {
                 2
             } else {
@@ -36,20 +31,16 @@ class SimpleRiverThicketScoreCalculator : EasyScoreCalculator<Grid, HardSoftScor
         }
 
         fun scoreRiver(p: Position) {
-            var sources = 0
             //should have exactly 1 river pointing at it
-            if (lookupMap[p.y - 1 to p.x]?.card is SouthRiver) {
-                sources++
+            val sources = Direction.values().fold(0) { acc, dir ->
+                val neighborCard = lookupMap[p.y + dir.deltaY to p.x + dir.deltaX]?.card
+                acc + if (neighborCard is River && neighborCard.direction.reverse() == dir) {
+                    1
+                } else {
+                    0
+                }
             }
-            if (lookupMap[p.y + 1 to p.x]?.card is NorthRiver) {
-                sources++
-            }
-            if (lookupMap[p.y to p.x - 1]?.card is EastRiver) {
-                sources++
-            }
-            if (lookupMap[p.y to p.x + 1]?.card is WestRiver) {
-                sources++
-            }
+
             // unless it is an edge
             if (p.isEdge && sources == 0) {
                 riverStartCount++
@@ -58,21 +49,11 @@ class SimpleRiverThicketScoreCalculator : EasyScoreCalculator<Grid, HardSoftScor
             }
 
             //should not be pointing at what is pointing at it
-            when(p.card) {
-                is NorthRiver -> if (lookupMap[p.y - 1 to p.x]?.card is SouthRiver) {
-                    hardScore--
-                }
-                is SouthRiver -> if (lookupMap[p.y + 1 to p.x]?.card is NorthRiver) {
-                    hardScore--
-                }
-                is WestRiver -> if (lookupMap[p.y to p.x - 1]?.card is EastRiver) {
-                    hardScore--
-                }
-                is EastRiver -> if (lookupMap[p.y to p.x + 1]?.card is WestRiver) {
-                    hardScore--
-                }
-            }
+            val pointingAt = lookupMap[(p.y to p.x) + (p.card as River).direction]
 
+            if (pointingAt?.card is River && (pointingAt.card as River).direction == (p.card as River).direction.reverse()) {
+                hardScore--
+            }
         }
 
         for (p in solution.shape) {
