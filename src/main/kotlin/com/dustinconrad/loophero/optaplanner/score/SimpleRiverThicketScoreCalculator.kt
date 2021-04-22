@@ -70,6 +70,31 @@ class SimpleRiverThicketScoreCalculator : EasyScoreCalculator<Grid, HardSoftScor
             0
         }
 
+        // should be 1 contiguous blob
+        val rivers = solution.shape
+            .filter { it.card is River }
+            .map { it.y to it.x }
+            .toMutableSet()
+
+        var islands = 0
+        while(rivers.isNotEmpty()) {
+            islands++
+            val initial = rivers.first()
+            rivers.remove(initial)
+            val q = ArrayDeque(listOf(initial))
+            while(q.isNotEmpty()) {
+                val river = q.removeFirst()
+
+                Direction.values().forEach {
+                    val neighbor = river + it
+                    if(rivers.remove(neighbor)) {
+                        q.add(neighbor)
+                    }
+                }
+            }
+        }
+        hardScore -= abs(1 - islands)
+
         return HardSoftScore.of(hardScore, softScore)
     }
 
