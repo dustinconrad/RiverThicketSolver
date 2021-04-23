@@ -1,17 +1,14 @@
 package com.dustinconrad.loophero.optaplanner.domain
 
-import com.dustinconrad.loophero.startPositions
 import org.optaplanner.core.api.domain.entity.PlanningEntity
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
+import org.optaplanner.core.api.domain.solution.PlanningScore
 import org.optaplanner.core.api.domain.solution.PlanningSolution
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider
 import org.optaplanner.core.api.domain.variable.PlanningVariable
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore
 
-import org.optaplanner.core.api.domain.solution.PlanningScore
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
-import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty
-import java.lang.IllegalStateException
-import java.lang.StringBuilder
 
 private const val availableCardsId = "availableCards"
 
